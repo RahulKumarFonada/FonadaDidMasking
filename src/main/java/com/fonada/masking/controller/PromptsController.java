@@ -18,6 +18,7 @@ import com.fonada.masking.utils.Utils;
 import com.google.gson.Gson;
 
 @RestController
+@RequestMapping(value = "/promptsController")
 public class PromptsController {
 
 	@Autowired

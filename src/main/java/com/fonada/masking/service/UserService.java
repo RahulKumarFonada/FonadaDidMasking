@@ -11,6 +11,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fonada.masking.bean.CommonFildsSetter;
@@ -42,11 +43,12 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userrepositories;
-
+	
 	/*
 	 * @Autowired private ServiceManager serviceManager;
 	 */
 	public DataContainer addNewUsers(UserDto user) {
+		BCryptPasswordEncoder bCryptPasswordEncoder=new BCryptPasswordEncoder();
 		LOGGER.info("**** Inside UserService.addnewuser() *****");
 		Users users = null;
 		PasswordMangerResponse response = new PasswordMangerResponse();
@@ -81,7 +83,8 @@ public class UserService {
 
 					users.setPasswordsalt(pwdUtil.generateSalt(16));
 					// String password = pwdUtil.generatePassword(8);
-					users.setPassword(encUtil.encrypt(user.getPassword(), users.getPasswordsalt()));
+					users.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));// (encUtil.encrypt(user.getPassword(),
+					// users.getPasswordsalt()));
 					users.setPwdResetDate(Utils.convertDateToString(new Date()));
 					userrepositories.save(users);
 

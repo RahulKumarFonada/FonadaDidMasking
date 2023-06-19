@@ -32,7 +32,7 @@ public class MobileNoValidator {
 	 */
 	public static boolean mobileNoValidate(String mobileNo) {
 
-		Pattern pattern = Pattern.compile("(0/91)?[7-9][0-9]{9}");
+		Pattern pattern = Pattern.compile("(0/91)?[6-9][0-9]{9}");
 		if (StringUtils.isEmpty(mobileNo)) {
 			return false;
 		}

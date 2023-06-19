@@ -21,6 +21,7 @@ import com.fonada.masking.service.ReportService;
  *
  */
 @RestController
+@RequestMapping(value = "/reportController")
 public class ReportController {
 
 	public static final Logger logger = LoggerFactory.getLogger(ReportController.class);

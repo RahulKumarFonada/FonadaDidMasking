@@ -10,9 +10,8 @@ import com.fonada.masking.entity.Roles;
 
 public interface RolesRepository extends CrudRepository<Roles, Integer> {
 
-	@Override
 	@Transactional(isolation = Isolation.READ_UNCOMMITTED)
-	Optional<Roles> findById(Integer id);
+	Optional<Roles> findById(int id);
 
 	Roles findByName(String name);
 }

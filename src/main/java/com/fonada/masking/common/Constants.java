@@ -65,7 +65,7 @@ public interface Constants {
 
 	public static final String RECORD_EXISTS_STRING = "Requested details already available.";
 
-	public static final String RECORD_NOT_EXISTS_STRING = "Requested detail/record not available.";
+	public static final String RECORD_NOT_EXISTS_STRING = "Requested detail not available.";
 
 	public static final String USER_LOGIN_SUCCESS = "Login successful.";
 	public static final String USER_SUCCESS = "User Added Successfully.";

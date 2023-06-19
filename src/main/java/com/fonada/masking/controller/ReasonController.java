@@ -17,6 +17,7 @@ import com.fonada.masking.repository.ReasonRepository;
 import com.google.gson.Gson;
 
 @RestController
+@RequestMapping(value = "/reasonController")
 public class ReasonController {
 
 	@Autowired

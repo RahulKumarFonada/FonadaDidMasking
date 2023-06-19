@@ -57,7 +57,7 @@ public class EncryptionUtil {
 
         String originalString = "amzwmsQA@200";
         String encryptedString =util.encrypt(originalString, secretKey);
-        String decryptedString =util.decrypt("ehheg4l15Z16R7MILPrzWg==", "r9em0v@SI9k@PUPe");
+        String decryptedString =util.decrypt("QRU4UDBX0ugxcAjo+BxY5w==", "ERqDft0Fp0w3nyp7");
 
         System.out.println("Original String " + originalString);
         System.out.println("Encrypted String " + encryptedString);

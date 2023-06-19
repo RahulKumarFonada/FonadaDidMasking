@@ -8,7 +8,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,6 +59,7 @@ public class UserController {
 	@Autowired
 	LoginUtility loginUtility;
 
+	
 	@RequestMapping(value = "/addnewuser", method = RequestMethod.POST)
 	@CrossOrigin("*")
 	public String addnewuser(@RequestBody UserDto users) {
@@ -213,22 +216,7 @@ public class UserController {
 		return gson.toJson(dataContainer).toString();
 	}
 
-	// Add new Roles
-	@RequestMapping(value = "/addroles", method = RequestMethod.POST)
-	@CrossOrigin("*")
-	public String addnewroles(@RequestBody Roles role) {
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-		DataContainer data = null;
-		LOGGER.info("**** Started UserController.getUserList() *****");
-
-		data = userservice.addNewRoles(role);
-
-		LOGGER.info("**** Successfully Executed UserController.addnewroles Resposne*****::" + data.toString());
-		return gson.toJson(data).toString();
-
-	}
-
-	@PostMapping("/login")
+	@GetMapping("/login")
 	@CrossOrigin("*")
 	public String doLogin(@RequestParam("username") String userName, @RequestParam("password") String password) {
 		LOGGER.info("**** Started UserController.doLogin() *****");
@@ -251,46 +239,16 @@ public class UserController {
 		return new Gson().toJson(data).toString();
 	}
 
-	@RequestMapping(value = "/findUserById", method = RequestMethod.POST)
-	@CrossOrigin("*")
-	public String findUserById(@RequestBody Users users) {
-		LOGGER.info("**** Started UserController.findUserById() *****" + users.toString());
-
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-		DataContainer dataContainer = new DataContainer();
-		Optional<Users> users1 = null;
-		try {
-			users1 = userRepository.findById(users.getId());
-			if (users1.isPresent()) {
-				dataContainer.setData(users1);
-				dataContainer.setMsg(Constants.SUCCESS_MSG);
-				dataContainer.setStatus(Constants.REQUEST_SUCCESS);
-			} else {
-				dataContainer.setMsg(Constants.RECORD_NOT_EXISTS_STRING);
-				dataContainer.setStatus(Constants.NOT_FOUND);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			dataContainer.setMsg("Exception::" + e.getMessage());
-			dataContainer.setStatus(Constants.NOT_FOUND);
-			LOGGER.info("***** Exception UserController.findUserById *****");
-		}
-		LOGGER.info(
-				"**** Successfully Executed UserController.findUserById() Resposne*****::" + dataContainer.toString());
-		return gson.toJson(dataContainer).toString();
-
-	}
-
 	@RequestMapping(value = "/deleteUserById", method = RequestMethod.POST)
 	@CrossOrigin("*")
-	public String deleteUserById(@RequestBody Users users) {
-		LOGGER.info("**** Started UserController.deleteUserById() *****" + users.toString());
+	public String deleteUserById(@RequestParam("id") Integer id) {
+		LOGGER.info("**** Started UserController.deleteUserById() *****");
 
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		DataContainer dataContainer = new DataContainer();
 		Optional<Users> users1 = null;
 		try {
-			users1 = userRepository.findById(users.getId());
+			users1 = userRepository.findById(id);
 			if (users1.isPresent()) {
 				if (users1.get().getIsActive().equals("1")) {
 					users1.get().setIsActive(String.valueOf(Status.INACTIVE.getId()));
@@ -316,6 +274,41 @@ public class UserController {
 		}
 		LOGGER.info(
 				"**** Successfully Executed UserController.deleteUserById() Response*****" + dataContainer.toString());
+		return gson.toJson(dataContainer).toString();
+	}
+
+	@RequestMapping(value = "/findExitsUser", method = RequestMethod.GET)
+	@CrossOrigin("*")
+	public String getExistUser(@RequestParam("userName") String userName) {
+		DataContainer dataContainer = new DataContainer();
+		Users user = null;
+		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+
+		try {
+			LOGGER.info("**** Started UserController.getExistUser() *****");
+
+			user = userRepository.findByUsername(userName);
+			if (Objects.nonNull(user)) {
+				if (Integer.valueOf(user.getIsActive()) == 1) {
+
+					dataContainer.setData(user);
+					dataContainer.setMsg(Constants.SUCCESS_MSG);
+					dataContainer.setStatus(Constants.REQUEST_SUCCESS);
+				} else {
+					dataContainer.setMsg(Constants.USER_NOT_ACTIVE);
+					dataContainer.setStatus(Constants.NOT_FOUND);
+				}
+			} else {
+				dataContainer.setMsg(Constants.RECORD_NOT_EXISTS_STRING);
+				dataContainer.setStatus(Constants.NOT_FOUND);
+			}
+		} catch (Exception e) {
+			LOGGER.error("***** Got Exception getExistUser()*****" + e.getMessage());
+			dataContainer.setMsg("Got Exception::" + e.getMessage());
+			dataContainer.setStatus(Constants.NOT_FOUND);
+		}
+		LOGGER.info("**** Successfully Executed UserController.getExistUser() *****"
+				+ gson.toJson(dataContainer).toString());
 		return gson.toJson(dataContainer).toString();
 	}
 }

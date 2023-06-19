@@ -23,6 +23,7 @@ import com.fonada.masking.utils.Utils;
 import com.google.gson.Gson;
 
 @RestController
+@RequestMapping(value = "/timeGroupController")
 public class TimeGroupController {
 	public static final Logger logger = LoggerFactory.getLogger(TimeGroupController.class);
 	@Autowired
